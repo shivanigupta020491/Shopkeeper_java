@@ -1,9 +1,12 @@
 package com.testing.shopkeeper_java;
 
 
+import androidx.annotation.MainThread;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.lifecycle.LiveData;
 import androidx.lifecycle.ViewModelProvider;
 
+import android.Manifest;
 import android.app.DatePickerDialog;
 import android.content.Intent;
 import android.os.AsyncTask;
@@ -30,6 +33,10 @@ import com.testing.shopkeeper_java.model.Shopkeeper;
 import com.testing.shopkeeper_java.viewModel.InventoryViewModel;
 import com.testing.shopkeeper_java.viewModel.ShpokeeperViewModel;
 
+import org.json.JSONObject;
+import org.w3c.dom.Text;
+
+import java.lang.reflect.Field;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -64,7 +71,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private Float totalAnmt;
     private ShopkeeperDatabase shopkeeperDatabase;
     private Shopkeeper shopkeeper;
-    private ShpokeeperViewModel shpokeeperViewModel1;
+    private ShpokeeperViewModel shpokeeperViewModel;
     private InventoryViewModel inventoryViewModel;
     ArrayAdapter<String> uniqueIdSpinnerAdap;
 
@@ -98,7 +105,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private void initInstance() {
 
         shopkeeperDatabase = ShopkeeperDatabase.getInstance(this);
-        shpokeeperViewModel1 = new ViewModelProvider(this).get(ShpokeeperViewModel.class);
+        shpokeeperViewModel = new ViewModelProvider(this).get(ShpokeeperViewModel.class);
         inventoryViewModel = new ViewModelProvider(this).get(InventoryViewModel.class);
         uniqueIdPopupValue = "New";
 
@@ -252,7 +259,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
                            }
 
-                           List<Shopkeeper> event = shpokeeperViewModel1.shopkeeperDao.getList();
+                           List<Shopkeeper> event = shpokeeperViewModel.shopkeeperDao.getList();
                            System.out.println("insert data print " + event.size() );
 
                        }
@@ -455,7 +462,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
               //  System.out.println(">>>>>>> InsertaUpdateFunction main insert " + event);
                 shopkeeper = new Shopkeeper(uniqueId,nameText,date,price,quantity,totalCost,transactionValue);
            //   System.out.println(">>>>>>> InsertaUpdateFunction main insert " + shopkeeper);
-                shpokeeperViewModel1.insert(shopkeeper);
+                shpokeeperViewModel.insert(shopkeeper);
 
 
 //
@@ -472,7 +479,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         Thread thread = new Thread(new Runnable() {
             @Override
             public void run() {
-                List<Shopkeeper> event = shpokeeperViewModel1.shopkeeperDao.getList();
+                List<Shopkeeper> event = shpokeeperViewModel.shopkeeperDao.getList();
                 List<InventoryData> inventoryData = inventoryViewModel.inventoryDao.getList();
                 System.out.println(">>>>>>>> insert data print " + event.size() + inventoryData.size());
 
